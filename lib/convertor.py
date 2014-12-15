@@ -16,7 +16,7 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 		words[0]=words[0].lower()
 		if words[0]=='host':
 			" hostnameは全て小文字の文字列 "
-			hostnames=','.join([ w.lower() for w in words[1:] ])
+			hostnames=' '.join([ w.lower() for w in words[1:] ])
 			continue
 		if words[0]=='load':
 			fname_load = os.path.dirname(fh.name) + '/' + words[1]
