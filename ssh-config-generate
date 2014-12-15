@@ -6,7 +6,10 @@ ssh-config-generate(){
 #     ssh_config=/tmp/.$USER.ssh_config
 #     rm -f "$ssh_config"
 #     ()( umask 077; :>"$ssh_config"; )
-	find ~/.ssh/config.d -type f ! -name '.*' | sort | xargs "$backend_dir/convertor.py" #>"$ssh_config"
+	find ~/.ssh/config.d -type f ! -name '.*' |
+		grep '[0-9]\+[^/]\+$' |
+		sort |
+		xargs "$backend_dir/convertor.py" #>"$ssh_config"
 #     if ! [ -L ~/.ssh/config ]; then
 #         rm -f ~/.ssh/config
 #         ln -s "$ssh_config" ~/.ssh/config
