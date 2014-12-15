@@ -2,6 +2,7 @@
 
 import sys
 from copy import deepcopy
+import os.path
 
 def parser(fh, _global_setting={}, _hosts_setting={}):
 	global_setting = deepcopy(_global_setting)
@@ -16,6 +17,13 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 		if words[0]=='host':
 			" hostnameは全て小文字の文字列 "
 			hostnames=','.join([ w.lower() for w in words[1:] ])
+			continue
+		if words[0]=='load':
+			fname_load = os.path.dirname(fh.name) + '/' + words[1]
+			with open(fname_load, 'r') as fh_load:
+				setting = parser(fh_load, global_setting, hosts_setting )
+				global_setting = setting['global']
+				hosts_setting = setting['hosts']
 			continue
 
 		if hostnames is None:
