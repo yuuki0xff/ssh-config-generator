@@ -7,6 +7,7 @@ import os.path
 def parser(fh, _global_setting={}, _hosts_setting={}):
 	global_setting = deepcopy(_global_setting)
 	hosts_setting = deepcopy(_hosts_setting)
+	priority = []
 	hostnames=None
 	""" 拡張フォーマットのファイルのパースを行う """
 	for line in fh.readlines():
@@ -17,6 +18,7 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 		if words[0]=='host':
 			" hostnameは全て小文字の文字列 "
 			hostnames=' '.join([ w.lower() for w in words[1:] ])
+			priority.append( hostnames )
 			" はじめにグローバルな設定を適用"
 			hosts_setting[hostnames] = deepcopy( global_setting )
 			continue
@@ -37,19 +39,20 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 	return {
 			'global': global_setting,
 			'hosts': hosts_setting,
+			'priority': priority
 			}
 
 
 for filepath in sys.argv[1:]:
 	with open( filepath, 'r' ) as fh:
-		hosts_setting = parser(fh)['hosts']
+		setting = parser(fh)
 
 		""" ノーマルなのフォーマットで出力 """
-		for hostnames in hosts_setting.keys():
+		for hostnames in setting['priority']:
 			print('host '+hostnames)
-			for key in hosts_setting[hostnames].keys():
+			for key in setting['hosts'][hostnames].keys():
 				print(
 						key + " " +
-						" ".join( hosts_setting[hostnames][key])
+						" ".join( setting['hosts'][hostnames][key])
 						)
 
