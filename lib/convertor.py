@@ -17,6 +17,8 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 		if words[0]=='host':
 			" hostnameは全て小文字の文字列 "
 			hostnames=' '.join([ w.lower() for w in words[1:] ])
+			" はじめにグローバルな設定を適用"
+			hosts_setting[hostnames] = deepcopy( global_setting )
 			continue
 		if words[0]=='load':
 			fname_load = os.path.dirname(fh.name) + '/' + words[1]
@@ -31,9 +33,6 @@ def parser(fh, _global_setting={}, _hosts_setting={}):
 			global_setting[ words[0] ]=words[1:]
 		else:
 			""" reading hosts setting """
-			" はじめにグローバルな設定を適用してから、それを上書き "
-			if hosts_setting.get(hostnames, None) is None:
-				hosts_setting[hostnames] = deepcopy( global_setting )
 			hosts_setting[hostnames][ words[0] ] = words[1:]
 	return {
 			'global': global_setting,
